@@ -1,6 +1,6 @@
 package config
 
-const KMaxHeight = 12
+const KMaxHeight uint = 12
 
 // 可排序的变量类型的泛型列表
 type Generic interface {

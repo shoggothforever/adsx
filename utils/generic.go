@@ -17,8 +17,8 @@ func Lq[T config.Generic](v1, v2 T) bool {
 
 	return v1 < v2
 }
-func RandomLevel() int {
-	level := 1
+func RandomLevel() uint {
+	level := (uint)(1)
 	for rand.Int()%4 == 0 && level < config.KMaxHeight {
 		level++
 	}

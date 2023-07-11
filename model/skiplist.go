@@ -1,14 +1,18 @@
 package model
 
 import (
+	"fmt"
+	"math"
 	"skiplist/config"
 	"skiplist/utils"
+	"sync"
 )
 
 type SkipList[T config.Generic] struct {
-	Level      int
+	Level      uint
 	Length     uint
 	Head, Tail *SkipNode[T]
+	m          sync.Mutex
 }
 
 func NewSList[T config.Generic]() *SkipList[T] {
@@ -21,7 +25,7 @@ func NewSList[T config.Generic]() *SkipList[T] {
 	level := config.KMaxHeight
 	var v T
 	sl.Head = NewSNode[T](level, "", v)
-	for i := 0; i < level; i++ {
+	for i := (uint)(0); i < level; i++ {
 		sl.Head.Skips[i].Next = nil
 		sl.Head.Skips[i].Span = 0
 	}
@@ -32,8 +36,10 @@ func NewSList[T config.Generic]() *SkipList[T] {
 func (s *SkipList[T]) Insert(value T, key string) *SkipNode[T] {
 	var update [config.KMaxHeight]*SkipNode[T]
 	var rank [config.KMaxHeight]uint
+	s.m.Lock()
+	defer s.m.Unlock()
 	x := s.Head
-	for i := s.Level - 1; i >= 0; i-- {
+	for i := s.Level - 1; i >= 0 && i < math.MaxUint; i-- {
 		if i == s.Level-1 {
 			rank[i] = 0
 		} else {
@@ -44,8 +50,8 @@ func (s *SkipList[T]) Insert(value T, key string) *SkipNode[T] {
 			rank[i] += x.Span(i)
 			x = x.Next(i)
 		}
-		if x.Next(i) != nil && utils.Eq(x.Next(i).Value, value) {
-			return nil
+		if x.Next(i) != nil && utils.Eq(x.Next(i).Value, value) && x.Next(i).Key == key {
+			return x.Next(i)
 		}
 		update[i] = x
 	}
@@ -55,13 +61,13 @@ func (s *SkipList[T]) Insert(value T, key string) *SkipNode[T] {
 		for i := s.Level; i < level; i++ {
 			rank[i] = 0
 			update[i] = s.Head
-			update[i].level = level
+			//update[i].level = level
 			update[i].SetSpan(i, s.Length)
 		}
 		s.Level = level
 	}
 	x = NewSNode[T](level, key, value)
-	for i := 0; i < level; i++ {
+	for i := (uint)(0); i < level; i++ {
 		//x.Skips[i].Next = update[i].Next(i)
 		x.SetNext(i, update[i].Next(i))
 		//update[i].Skips[i].Next = x
@@ -86,4 +92,49 @@ func (s *SkipList[T]) Insert(value T, key string) *SkipNode[T] {
 	}
 	s.Length++
 	return x
+}
+func (s *SkipList[T]) DeleteNode(x *SkipNode[T], update [config.KMaxHeight]*SkipNode[T]) *SkipNode[T] {
+	var i uint = 0
+	for ; i < s.Level; i++ {
+		if update[i].Next(i) == x {
+			update[i].SetSpan(i, update[i].Span(i)+x.Span(i)-1)
+			update[i].SetNext(i, x.Next(i))
+		} else {
+			update[i].SetSpan(i, update[i].Span(i)-1)
+		}
+	}
+	if x.Next(0) != nil {
+		x.Skips[0].Next.back = x.back
+	} else {
+		s.Tail = x.back
+	}
+	//检测删除节点之后最高层是否为空，如果是就删除这一层，并且继续向下检测
+	for s.Level > 1 && s.Head.Next(s.Level-1) == nil {
+		s.Level--
+	}
+	s.Length--
+	return x
+}
+func (s *SkipList[T]) Delete(key string, value T) bool {
+
+	var update [config.KMaxHeight]*SkipNode[T]
+	s.m.Lock()
+	defer s.m.Unlock()
+	y := s.Head
+	for i := s.Level - 1; i >= 0 && i < math.MaxUint; i-- {
+		for y.Next(i) != nil && (utils.Lq(y.Next(i).Value, value) || utils.Eq(y.Next(i).Value, value) && y.Next(i).Key < key) {
+			y = y.Next(i)
+		}
+		update[i] = y
+	}
+	fmt.Println(update)
+	y = y.Next(0)
+	fmt.Println(y.Value, value, y.Key, key)
+	if y != nil && utils.Eq(value, y.Value) && y.Key == key {
+		fmt.Println("正在删除节点:", y)
+		s.DeleteNode(y, update)
+		return true
+	}
+	return false
+
 }
