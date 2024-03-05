@@ -1,7 +1,6 @@
-package model
+package skipList
 
 import (
-	"fmt"
 	"math"
 	"skiplist/config"
 	"skiplist/utils"
@@ -21,6 +20,7 @@ func NewSList[T config.Generic]() *SkipList[T] {
 		Length: 0,
 		Head:   &SkipNode[T]{},
 		Tail:   &SkipNode[T]{},
+		m:      sync.Mutex{},
 	}
 	level := config.KMaxHeight
 	var v T
@@ -127,11 +127,10 @@ func (s *SkipList[T]) Delete(key string, value T) bool {
 		}
 		update[i] = y
 	}
-	fmt.Println(update)
+	//fmt.Println(update)
 	y = y.Next(0)
-	fmt.Println(y.Value, value, y.Key, key)
 	if y != nil && utils.Eq(value, y.Value) && y.Key == key {
-		fmt.Println("正在删除节点:", y)
+		//fmt.Println("正在删除节点:", y)
 		s.DeleteNode(y, update)
 		return true
 	}

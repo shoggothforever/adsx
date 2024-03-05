@@ -1,4 +1,4 @@
-package model
+package skipList
 
 import (
 	"skiplist/config"
