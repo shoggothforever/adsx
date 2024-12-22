@@ -1,9 +1,9 @@
 package skipList
 
 import (
+	"github.com/shoggothforever/adsx/config"
+	"github.com/shoggothforever/adsx/utils"
 	"math"
-	"skiplist/config"
-	"skiplist/utils"
 	"sync"
 )
 

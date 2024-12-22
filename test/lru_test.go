@@ -1,7 +1,7 @@
 package test
 
 import (
-	"skiplist/model/lrux"
+	"github.com/shoggothforever/adsx/model/lrux"
 	"testing"
 )
 

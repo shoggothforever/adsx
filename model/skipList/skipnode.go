@@ -1,7 +1,7 @@
 package skipList
 
 import (
-	"skiplist/config"
+	"github.com/shoggothforever/adsx/config"
 )
 
 type Skip[T config.Generic] struct {

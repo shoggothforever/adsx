@@ -6,6 +6,9 @@ const KMaxHeight uint = 12
 type Generic interface {
 	Ordered
 }
+type Number interface {
+	Integer | Float
+}
 type Ordered interface {
 	Integer | Float | ~string
 }
