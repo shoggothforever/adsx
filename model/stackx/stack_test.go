@@ -25,7 +25,7 @@ func trap(height []int) (ans int) {
 			ans += (height[i] - bottom) * (i - st.Top() - 1)
 		}
 
-		st.push(i)
+		st.Push(i)
 	}
 	return
 }

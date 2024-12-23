@@ -12,7 +12,7 @@ func NewStack[T config.Generic](content []T) *Stack[T] {
 	}
 	return &Stack[T]{content: content}
 }
-func (s *Stack[T]) push(item T) {
+func (s *Stack[T]) Push(item T) {
 	s.content = append(s.content, item)
 }
 func (s *Stack[T]) Pop() T {
