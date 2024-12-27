@@ -12,7 +12,7 @@ func LowerBound(nums []int, target int) int {
 			r = mid - 1
 		}
 	}
-	return nums[l]
+	return l
 }
 
 // nums需要从小到大排序，找到第一个大于target的数字
@@ -27,5 +27,5 @@ func UpperBound(nums []int, target int) int {
 			r = mid - 1
 		}
 	}
-	return nums[l]
+	return l
 }
