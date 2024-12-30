@@ -8,12 +8,18 @@ import (
 func Gt[T config.Generic](v1, v2 T) bool {
 	return v1 > v2
 }
+func Get[T config.Generic](v1, v2 T) bool {
+	return v1 >= v2
+}
 func Eq[T config.Generic](v1, v2 T) bool {
 
 	return v1 == v2
 }
-func Lq[T config.Generic](v1, v2 T) bool {
+func Lt[T config.Generic](v1, v2 T) bool {
 	return v1 < v2
+}
+func Leq[T config.Generic](v1, v2 T) bool {
+	return v1 <= v2
 }
 func RandomLevel() uint {
 	level := (uint)(1)

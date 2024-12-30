@@ -10,9 +10,9 @@ func cmpDefault[T config.Generic](a T, b T) bool {
 }
 
 type Heap[T config.Generic] struct {
-	Content []T
-	Size    int
-	Cmp     func(a, b T) bool
+	content []T
+	size    int
+	cmp     func(a, b T) bool
 }
 
 // NewHeap 默认大顶堆
@@ -24,15 +24,15 @@ func NewHeap[T config.Generic](content []T, cmp func(a T, b T) bool) *Heap[T] {
 		content = make([]T, 0)
 	}
 	h := &Heap[T]{
-		Size:    len(content),
-		Content: content,
-		Cmp:     cmp,
+		size:    len(content),
+		content: content,
+		cmp:     cmp,
 	}
 	h.BuildHeap()
 	return h
 }
 func (h *Heap[T]) BuildHeap() {
-	for i := h.Size/2 - 1; i >= 0; i-- {
+	for i := h.size/2 - 1; i >= 0; i-- {
 		h.HeapModify(i)
 	}
 }
@@ -40,40 +40,47 @@ func (h *Heap[T]) HeapModify(parent int) {
 	l := parent*2 + 1
 	r := parent*2 + 2
 	large := parent
-	if l < h.Size && h.Cmp(h.Content[l], h.Content[large]) {
+	if l < h.size && h.cmp(h.content[l], h.content[large]) {
 		large = l
 	}
-	if r < h.Size && h.Cmp(h.Content[r], h.Content[large]) {
+	if r < h.size && h.cmp(h.content[r], h.content[large]) {
 		large = r
 	}
 	if parent != large {
-		h.Content[parent], h.Content[large] = h.Content[large], h.Content[parent]
+		h.content[parent], h.content[large] = h.content[large], h.content[parent]
 		h.HeapModify(large)
 	}
 }
 func (h *Heap[T]) Push(item T) {
 	// 添加新元素到堆尾
-	h.Content = append(h.Content, item)
-	h.Size++
+	h.content = append(h.content, item)
+	h.size++
 	// 向上调整
-	child := h.Size - 1
+	child := h.size - 1
 	parent := (child - 1) / 2
-	for child > 0 && h.Cmp(h.Content[child], h.Content[parent]) {
-		h.Content[child], h.Content[parent] = h.Content[parent], h.Content[child]
+	for child > 0 && h.cmp(h.content[child], h.content[parent]) {
+		h.content[child], h.content[parent] = h.content[parent], h.content[child]
 		child = parent
 		parent = (child - 1) / 2
 	}
 }
 func (h *Heap[T]) Pop() {
-	h.Content[0], h.Content[h.Size-1] = h.Content[h.Size-1], h.Content[0]
-	h.Content = h.Content[:h.Size-1]
-	h.Size--
+	h.content[0], h.content[h.size-1] = h.content[h.size-1], h.content[0]
+	h.content = h.content[:h.size-1]
+	h.size--
 	h.HeapModify(0)
 }
 func (h *Heap[T]) Top() T {
 	// 添加新元素到堆尾
-	if h.Size == 0 {
+	if h.size == 0 {
 		panic("zero")
 	}
-	return h.Content[0]
+	return h.content[0]
+}
+func (h *Heap[T]) Empty() bool {
+	// 添加新元素到堆尾
+	return h.size == 0
+}
+func (h *Heap[T]) Size() int {
+	return h.size
 }

@@ -11,6 +11,6 @@ func TestCmp(t *testing.T) {
 	convey.Convey("TestCmp", t, func() {
 		s1 := "123"
 		s2 := "234"
-		convey.So(utils.Lq(s1, s2), convey.ShouldBeTrue)
+		convey.So(utils.Lt(s1, s2), convey.ShouldBeTrue)
 	})
 }

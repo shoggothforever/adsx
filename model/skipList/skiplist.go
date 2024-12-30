@@ -122,7 +122,7 @@ func (s *SkipList[T]) Delete(key string, value T) bool {
 	defer s.m.Unlock()
 	y := s.Head
 	for i := s.Level - 1; i >= 0 && i < math.MaxUint; i-- {
-		for y.Next(i) != nil && (utils.Lq(y.Next(i).Value, value) || utils.Eq(y.Next(i).Value, value) && y.Next(i).Key < key) {
+		for y.Next(i) != nil && (utils.Lt(y.Next(i).Value, value) || utils.Eq(y.Next(i).Value, value) && y.Next(i).Key < key) {
 			y = y.Next(i)
 		}
 		update[i] = y
