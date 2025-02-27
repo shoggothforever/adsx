@@ -18,8 +18,8 @@ type Node struct {
 	Prev, Next *Node
 }
 
-func Constructor(capacity int) LRUCache {
-	cache := LRUCache{
+func Constructor(capacity int) *LRUCache {
+	cache := &LRUCache{
 		Head: new(Node),
 		Tail: new(Node),
 		m:    sync.Mutex{},

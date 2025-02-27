@@ -8,7 +8,7 @@ import (
 // BitmapTrie 是使用位图实现的 Trie 树,目前仅支持插入纯数字id(string)
 type BitmapTrie struct {
 	// 联通性位图 [][10]，每个单元是10个bit，表示当前数字与下一层数字的联通性
-	connBitmap [][10]uint16
+	connBitmap [][64]uint64
 }
 
 const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -17,7 +17,7 @@ const grow = 10
 // 传入最大数字位数的长度，大于0
 func NewBirdMap() *BitmapTrie {
 	return &BitmapTrie{
-		connBitmap: make([][10]uint16, grow),
+		connBitmap: make([][64]uint64, grow),
 	}
 }
 
@@ -29,12 +29,12 @@ func (t *BitmapTrie) Insert(id string) {
 		currDigit := id[i] - '0'
 		nextDigit := id[i+1] - '0'
 		if len(t.connBitmap) <= i {
-			t.connBitmap = append(t.connBitmap, make([][10]uint16, grow)...)
+			t.connBitmap = append(t.connBitmap, make([][64]uint64, grow)...)
 		}
 		// 标记联通性位图，表示当前层的数字currDigit可以连接到下一层的nextDigit
 		t.connBitmap[i][currDigit] |= 1 << nextDigit
 	}
-	fmt.Println(unsafe.Sizeof(t.connBitmap))
+	fmt.Println(unsafe.Sizeof(t.connBitmap[0]))
 	fmt.Println(len(t.connBitmap))
 }
 
