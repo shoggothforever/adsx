@@ -27,6 +27,7 @@ func TestNumeric(t *testing.T) {
 		fmt.Println("Div:", quotient, "Remainder:", remainder) // 8 Remainder: 9000000009
 		convey.So(quotient, convey.ShouldEqual, "8")
 		convey.So(remainder, convey.ShouldEqual, "9000000009")
-
+		quotient, remainder = BigDiv("9999999999999999999999999999999999999999999", "33")
+		fmt.Println("Div:", quotient, remainder)
 	})
 }

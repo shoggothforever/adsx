@@ -114,23 +114,18 @@ func BigDiv(a, b string) (string, string) {
 
 	// 商和余数初始化
 	remainder := a
-	r := "1"
 	bond := (len(a) - len(b) + 1) * 4
-	strs := make([]string, bond)
-	for i := 0; i < bond; i++ {
-		strs[bond-1-i] = r
-		r = BigMul(r, "2")
-	}
+
 	result := "0"
 	// 二进制模拟除法：从高位开始
 	for i := 0; i < bond; i++ {
 		// 将除数左移 i 位
-		shiftedB := BigMul(b, strs[i])
+		shiftedB := BigMul(b, b2[bond-1-i])
 		// 判断余数是否大于等于左移后的除数
 		if BigCmp(remainder, shiftedB) >= 0 {
 			//fmt.Println("bigger!!!")
 			remainder = BigSub(remainder, shiftedB)
-			result = BigAdd(result, strs[i])
+			result = BigAdd(result, b2[bond-1-i])
 		}
 	}
 
